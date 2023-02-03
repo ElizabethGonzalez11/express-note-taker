@@ -1,19 +1,42 @@
 const express = require('express');
-const apiRoutes = require('./routes/apiRoutes');
-const htmlRoutes = require('./routes/htmlRoutes');
+const api = require('./routes/api');
+const { clog } = require('./middleware/clog');
 const path = require('path');
 
 // Initialize the app and create a port
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Set up body parsing, static, and route middleware
+// Import custom middleware, "cLog"
+app.use(clog);
+
+// Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use('/api', apiRoutes);
-app.use('/', htmlRoutes);
+app.use('/api', api);
+
+// GET Route for homepage
+app.get('/', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/index.html'))
+);
+
+// GET Route for feedback page
+app.get('/notes', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/notes.html'))
+);
+
+// Wildcard route to direct users to a 404 page
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/404.html'))
+);
+
+app.get('/delete', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/delete.html'))
+);
 
 
 // Start the server on the port
-app.listen(PORT, () => console.log(`Listening on PORT:http://localhost: ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT} 🚀`)
+);

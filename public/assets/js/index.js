@@ -50,22 +50,17 @@ const deleteNote = (id) =>
     },
   });
 
-const updateNote = (noteId, noteContent) =>
-  fetch(`/api/notes/${noteId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(noteContent)
-  });
-
 const renderActiveNote = () => {
   hide(saveNoteBtn);
 
   if (activeNote.id) {
+    noteTitle.setAttribute('readonly', true);
+    noteText.setAttribute('readonly', true);
     noteTitle.value = activeNote.title;
     noteText.value = activeNote.text;
   } else {
+    noteTitle.removeAttribute('readonly');
+    noteText.removeAttribute('readonly');
     noteTitle.value = '';
     noteText.value = '';
   }
@@ -76,20 +71,10 @@ const handleNoteSave = () => {
     title: noteTitle.value,
     text: noteText.value,
   };
-
-  // If the active note we are working with has already been assigned an id, update it
-  if (activeNote.id) {
-    updateNote(activeNote.id, newNote).then(() => {
-      getAndRenderNotes();
-      activeNote = {};
-      renderActiveNote();
-    });
-  } else {
-    saveNote(newNote).then(() => {
-      getAndRenderNotes();
-      renderActiveNote();
-    });
-  }
+  saveNote(newNote).then(() => {
+    getAndRenderNotes();
+    renderActiveNote();
+  });
 };
 
 // Delete the clicked note
@@ -189,7 +174,7 @@ const renderNoteList = async (notes) => {
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
 if (window.location.pathname === '/notes') {
-  saveNoteBtn.addEventListener('click', handleNoteSave)
+  saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
