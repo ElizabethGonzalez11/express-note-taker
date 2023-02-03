@@ -1,3 +1,5 @@
+//see started code from instructor and review mini project
+
 const express = require('express');
 const api = require('./routes/api');
 const { clog } = require('./middleware/clog');
@@ -21,7 +23,7 @@ app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
-// GET Route for feedback page
+// GET Route for note page
 app.get('/notes', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
@@ -30,7 +32,7 @@ app.get('/notes', (req, res) =>
 app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/404.html'))
 );
-
+//get route for delete page
 app.get('/delete', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/delete.html'))
 );
